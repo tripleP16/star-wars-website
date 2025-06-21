@@ -1,0 +1,29 @@
+name: 'Check Branch Naming'
+
+on:
+  push:
+    branches-ignore:
+      - main
+  pull_request:
+    branches-ignore:
+      - main
+
+jobs:
+  check-branch-name:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check branch name
+        run: |
+          # Use github.head_ref for PRs, github.ref_name for pushes
+          BRANCH_NAME="${{ github.head_ref || github.ref_name }}"
+          
+          echo "Checking branch name: $BRANCH_NAME"
+          
+          if [[ ! "$BRANCH_NAME" =~ ^feature/[0-9]{2}-.+ ]]; then
+            echo "❌ Branch name '$BRANCH_NAME' does not match the required pattern"
+            echo "Expected: feature/XX-description (where XX is 2 digits)"
+            exit 1
+          fi
+          
+          echo "✅ Branch name is valid"
+        shell: bash
