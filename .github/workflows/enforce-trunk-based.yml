@@ -1,0 +1,20 @@
+name: 'Enforce Trunk-Based Development'
+
+on:
+  push:
+    branches: [ '**' ]
+  pull_request:
+    branches: [ '**' ]
+
+jobs:
+  enforce-trunk:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Ensure target branch is main
+        run: |
+          TARGET_BRANCH="${GITHUB_REF##*/}"
+          if [[ "$TARGET_BRANCH" != "main" ]]; then
+            echo "Error: All changes must be merged into 'main'. Target branch is '$TARGET_BRANCH'."
+            exit 1
+          fi
+        shell: bash 
