@@ -12,7 +12,11 @@ jobs:
     steps:
       - name: Ensure target branch is main
         run: |
-          TARGET_BRANCH="${GITHUB_REF##*/}"
+          if [ "$GITHUB_EVENT_NAME" = "pull_request" ]; then
+            TARGET_BRANCH="${{ github.event.pull_request.base.ref }}"
+          else
+            TARGET_BRANCH="${GITHUB_REF##*/}"
+          fi
           if [[ "$TARGET_BRANCH" != "main" ]]; then
             echo "Error: All changes must be merged into 'main'. Target branch is '$TARGET_BRANCH'."
             exit 1
