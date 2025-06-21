@@ -1,24 +1,40 @@
 name: 'Enforce Trunk-Based Development'
 
 on:
-  push:
-    branches: [ '**' ]
   pull_request:
-    branches: [ '**' ]
+    branches: ['**']
+  push:
+    branches-ignore: ['main']  # Only check non-main pushes
 
 jobs:
   enforce-trunk:
     runs-on: ubuntu-latest
     steps:
-      - name: Ensure target branch is main
+      - name: Enforce trunk-based development rules
         run: |
           if [ "$GITHUB_EVENT_NAME" = "pull_request" ]; then
+            # Ensure PRs target main
             TARGET_BRANCH="${{ github.event.pull_request.base.ref }}"
+            echo "Checking PR target: $TARGET_BRANCH"
+            
+            if [[ "$TARGET_BRANCH" != "main" ]]; then
+              echo "❌ Pull requests must target 'main' branch"
+              echo "Current target: '$TARGET_BRANCH'"
+              echo "Please change the base branch to 'main'"
+              exit 1
+            fi
+            echo "✅ PR correctly targets main"
+            
           else
-            TARGET_BRANCH="${GITHUB_REF##*/}"
+            # For pushes to non-main branches, discourage long-lived branches
+            BRANCH_NAME="${{ github.ref_name }}"
+            echo "Push detected to: $BRANCH_NAME"
+            
+            # Allow feature branches but warn about long-lived branches
+            if [[ ! "$BRANCH_NAME" =~ ^(feature|bugfix|hotfix)/ ]]; then
+              echo "⚠️  Warning: Consider using feature/ branches for trunk-based development"
+              echo "Current branch: $BRANCH_NAME"
+              echo "Recommended: feature/your-feature-name"
+            fi
           fi
-          if [[ "$TARGET_BRANCH" != "main" ]]; then
-            echo "Error: All changes must be merged into 'main'. Target branch is '$TARGET_BRANCH'."
-            exit 1
-          fi
-        shell: bash 
+        shell: bash
