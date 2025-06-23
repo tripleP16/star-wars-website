@@ -1,20 +1,14 @@
 <script setup>
-// No need to import vue-router directly here
+import AppBar from "./components/AppBar.vue";
 </script>
 
 <template>
-  <div id="app">
-    <nav>
-      <router-link to="/planets" class="nav-button">Planets</router-link>
-      <router-link to="/inhabitants" class="nav-button"
-        >Inhabitants</router-link
-      >
-    </nav>
-
-    <main>
+  <v-app>
+    <AppBar />
+    <v-main>
       <router-view />
-    </main>
-  </div>
+    </v-main>
+  </v-app>
 </template>
 
 <style scoped>
