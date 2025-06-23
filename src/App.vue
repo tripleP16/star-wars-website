@@ -1,47 +1,59 @@
 <script setup>
-import HelloWorld from './components/HelloWorld.vue'
-import TheWelcome from './components/TheWelcome.vue'
+// No need to import vue-router directly here
 </script>
 
 <template>
-  <header>
-    <img alt="Vue logo" class="logo" src="./assets/logo.svg" width="125" height="125" />
+  <div id="app">
+    <nav>
+      <router-link to="/planets" class="nav-button">Planets</router-link>
+      <router-link to="/inhabitants" class="nav-button"
+        >Inhabitants</router-link
+      >
+    </nav>
 
-    <div class="wrapper">
-      <HelloWorld msg="You did it!" />
-    </div>
-  </header>
-
-  <main>
-    <TheWelcome />
-  </main>
+    <main>
+      <router-view />
+    </main>
+  </div>
 </template>
 
 <style scoped>
-header {
-  line-height: 1.5;
+#app {
+  min-height: 100vh;
+  background: #1a1a1a;
+  color: white;
 }
 
-.logo {
-  display: block;
-  margin: 0 auto 2rem;
+nav {
+  background: #2a2a2a;
+  padding: 1rem;
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
 }
 
-@media (min-width: 1024px) {
-  header {
-    display: flex;
-    place-items: center;
-    padding-right: calc(var(--section-gap) / 2);
-  }
+.nav-button {
+  background: #ffd700;
+  color: #1a1a1a;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: bold;
+  text-decoration: none;
+  display: inline-block;
+}
 
-  .logo {
-    margin: 0 2rem 0 0;
-  }
+.nav-button:hover {
+  background: #ffed4e;
+}
 
-  header .wrapper {
-    display: flex;
-    place-items: flex-start;
-    flex-wrap: wrap;
-  }
+.nav-button.router-link-active {
+  background: #ffed4e;
+  box-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
+}
+
+main {
+  padding: 2rem;
 }
 </style>
